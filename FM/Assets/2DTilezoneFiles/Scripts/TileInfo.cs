@@ -27,11 +27,12 @@ public class TileInfo : MonoBehaviour {
 	[System.NonSerialized]
 	public TilePolygonPoints[,] knownTilePoints;
 
-	[HideInInspector]
-	/// <summary>
-	/// List of the tiles in a 1D array in the format [ local y * mapWidth + local x ].
-	/// To get the index of a tile from a world position use WorldPointToMapIndex
-	/// </summary>
+    [HideInInspector]
+    /// <summary>
+    /// List of the tiles in a 1D array in the format [ local y * mapWidth + local x ].
+    /// To get the index of a tile from a world position use WorldPointToMapIndex
+    /// </summary>
+   // public int 48;
 	public Tile[] tiles;
 	[HideInInspector]
 	public int mapWidth;

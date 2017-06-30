@@ -152,6 +152,7 @@
     <Compile Include="Assets\RainMaker\Prefab\RainCollision.cs" />
     <Compile Include="Assets\RainMaker\Prefab\RainScript.cs" />
     <Compile Include="Assets\RainMaker\Prefab\RainScript2D.cs" />
+    <Compile Include="Assets\Script\EdgeCol_With_BG.cs" />
     <Compile Include="Assets\Script\PlayerMove.cs" />
     <Compile Include="Assets\Script\StaticGlobal.cs" />
   </ItemGroup>

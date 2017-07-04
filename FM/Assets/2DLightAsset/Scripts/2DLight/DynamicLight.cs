@@ -56,7 +56,7 @@ namespace DynamicLight2D
 		[SerializeField]
 		public float lightRadius = 20f;
 		
-		[Range(4,20)]
+		[Range(4,40)]
 		public int lightSegments = 8;
 		
 		public LayerMask layer;
@@ -177,7 +177,7 @@ namespace DynamicLight2D
 							v.endpoint = true;
 						}
 						
-						Debug.DrawLine(transform.position, v.pos, Color.white);	
+						//Debug.DrawLine(transform.position, v.pos, Color.white);	
 						
 						//--Convert To local space for build mesh (mesh craft only in local vertex)
 						v.pos = transform.InverseTransformPoint(v.pos); 

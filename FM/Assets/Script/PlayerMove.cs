@@ -8,7 +8,8 @@ public class PlayerMove : MonoBehaviour {
     public float jumpPower;
 
     Rigidbody2D r;
-
+    SpriteRenderer sr;
+    Animator anim;
     Vector3 movement;
     bool isJumping;
 
@@ -19,6 +20,8 @@ public class PlayerMove : MonoBehaviour {
         isJumping = false;
 
         r = gameObject.GetComponent<Rigidbody2D>();
+        sr = gameObject.GetComponent<SpriteRenderer>();
+        anim = gameObject.GetComponent<Animator>();
     }
 	
 	void Update () {
@@ -26,6 +29,7 @@ public class PlayerMove : MonoBehaviour {
         {
             isJumping = true;
         }
+       // Debug.Log(anim.GetFloat("hor"));
 	}
 
     void FixedUpdate()
@@ -42,22 +46,31 @@ public class PlayerMove : MonoBehaviour {
         Vector2 jumpVelocity = new Vector2(0, jumpPower);
         r.AddForce(jumpVelocity, ForceMode2D.Impulse);
 
-        isJumping = false;
+        isJumping = false;  
     }
 
     void Move()
     {
         Vector3 moveVelocity = Vector3.zero;
+        anim.SetFloat("hor", Mathf.Abs( Input.GetAxisRaw("Horizontal") ));
+        
+
         if (Input.GetAxisRaw("Horizontal") < 0)
         {
             moveVelocity = Vector3.left;
+            sr.flipX = true;
+            anim.SetBool("isWalk", true);
         }
-        else if (Input.GetAxisRaw("Horizontal") > 0)
+        if (Input.GetAxisRaw("Horizontal") > 0)
         {
             moveVelocity = Vector3.right;
+            sr.flipX = false;
+            anim.SetBool("isWalk", true);
         }
+        if(Input.GetAxisRaw("Horizontal") ==0)
+            anim.SetBool("isWalk", false);
 
-        transform.position += moveVelocity * movePower * Time.deltaTime;
+        transform.position += moveVelocity * (movePower) * Time.deltaTime;
     }
 }
 

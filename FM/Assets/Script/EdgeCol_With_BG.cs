@@ -26,8 +26,8 @@ public class EdgeCol_With_BG : MonoBehaviour {
         }
        
 
-        Debug.Log(lastIndex); 
-        Debug.Log(ec2d.pointCount);
+        //Debug.Log(lastIndex); 
+        //Debug.Log(ec2d.pointCount);
         for ( int i = lastIndex; i< ec2d.pointCount; i++)
         {
             vtmp[i] = lastPosition;

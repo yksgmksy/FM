@@ -5,32 +5,32 @@ using UnityEngine;
 public class Throwing : MonoBehaviour {
 
     public GameObject Effect;
-     GameObject moveTo;
+    GameObject player;
     public float speed;
-
+    Rigidbody2D r;
     Vector3 nomal;
 	// Use this for initialization
 	void Start () {
-        moveTo = GameObject.FindWithTag("Player"); 
-        nomal = moveTo.transform.position - gameObject.transform.position ;
-        nomal.Normalize();
-
+        player = GameObject.FindWithTag("Player");
+        r = gameObject.GetComponent<Rigidbody2D>();
     }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        transform.position += nomal * speed * Time.deltaTime;
-    }
+   
+        Vector3 tmp = r.velocity;
+        transform.position += tmp * speed * Time.deltaTime;
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        Vector2 orgin = this.gameObject.transform.position;
+        Vector2 dir = r.velocity;
+        RaycastHit2D hit = Physics2D.Raycast( orgin, dir,0.1f, 1 << LayerMask.NameToLayer("Player"));
+       
+        if (hit.collider != null)
         {
-            // Debug.Log("충돌");
-            Quaternion r = new Quaternion();
-           r.x = Random.Range(0.0f, 360.0f);
-                r.y = Random.Range(0.0f, 360.0f);
-            Instantiate(Effect, other.gameObject.transform.position, r );
+            Quaternion q = new Quaternion();
+            q.x = Random.Range(0.0f, 360.0f);
+            q.y = Random.Range(0.0f, 360.0f);
+            GameObject.Instantiate(Effect, hit.point, q).transform.parent = player.transform;
             DestroyObject(gameObject);
         }
     }

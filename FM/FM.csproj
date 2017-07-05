@@ -184,9 +184,11 @@
     <Compile Include="Assets\Script\NPC_ThrowObject.cs" />
     <Compile Include="Assets\Script\PlayerMove.cs" />
     <Compile Include="Assets\Script\StaticGlobal.cs" />
+    <Compile Include="Assets\Script\Sun_Moon_Move.cs" />
     <Compile Include="Assets\Script\Throwing.cs" />
     <Compile Include="Assets\Script\TimeColor_MeshRender.cs" />
     <Compile Include="Assets\Script\TimeColor_SpriteRender.cs" />
+    <Compile Include="Assets\Script\UI_Text_Show.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\2D Sky FREE\Demo\Scripts\Note.txt" />

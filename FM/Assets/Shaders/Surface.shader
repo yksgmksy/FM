@@ -5,7 +5,8 @@ Shader "Splatter/Surface"
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
-	_Color("Tint", Color) = (1,1,1,1)
+		_Color("Tint", Color) = (1,1,1,1)
+		_mixColor("mix",Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 0
 		_AlphaCutoff("Alpha Cutoff", Range(0.01, 1.0)) = 0.01
 	}
@@ -75,6 +76,7 @@ Shader "Splatter/Surface"
 	sampler2D _MainTex;
 	sampler2D _AlphaTex;
 	float _AlphaSplitEnabled;
+	uniform fixed4 _mixColor;
 
 	fixed4 SampleSpriteTexture(float2 uv)
 	{
@@ -94,8 +96,8 @@ Shader "Splatter/Surface"
 		clip(c.a - _AlphaCutoff);
 
 		if (all(c.rgb == (1,0,1) ))  c = fixed4(0.0f, 0.0f, 0.0f, 0.0f);
-
-		return c*IN.color;
+		
+		return c*IN.color * _mixColor;
 	}
 		ENDCG
 	}

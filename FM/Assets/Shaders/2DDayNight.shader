@@ -70,8 +70,7 @@ Shader "Custom/DayNight"
 			fixed4 frag(v2f IN) : SV_Target
 			{
 				fixed4 c = tex2D(_MainTex, IN.texcoord);
-			c *= _mixColor;
-			//if (all(c.rgb == _Color.rgb))  c = fixed4(0.0f, 0.0f, 0.0f, 0.0f);
+				c *= _mixColor;
 			return c* IN.color;
 			}
 		ENDCG

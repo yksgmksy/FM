@@ -13,9 +13,11 @@ public class PlayerMove : MonoBehaviour {
     Vector3 movement;
     bool isJumping;
 
+    public Vector3 MovingPostion; //처음위치로부터 움직인 거리
+
     void Start () {
 
-        
+        MovingPostion = Vector3.zero;
         movement = Vector3.zero;
         isJumping = false;
 
@@ -71,6 +73,7 @@ public class PlayerMove : MonoBehaviour {
             anim.SetBool("isWalk", false);
 
         transform.position += moveVelocity * (movePower) * Time.deltaTime;
+        MovingPostion += moveVelocity * (movePower) * Time.deltaTime;
     }
 }
 

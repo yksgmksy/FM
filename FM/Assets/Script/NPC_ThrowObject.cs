@@ -7,12 +7,12 @@ public class NPC_ThrowObject : MonoBehaviour {
     public GameObject throwObject;
     public float Dist;
     
-    GameObject playerTr;
+    GameObject target;
     float startTime ;
     float attSpeed = 2.5f;
 	// Use this for initialization
 	void Start () {
-        playerTr = GameObject.FindWithTag("Player");
+        target = GameObject.FindWithTag("Player");
         startTime = Time.time;
     }
 	
@@ -29,10 +29,14 @@ public class NPC_ThrowObject : MonoBehaviour {
         {
             if (startTime + attSpeed < Time.time)
             {
-                Quaternion r = new Quaternion();
-                r.x = Random.Range(0.0f, 360.0f);
-                r.y = Random.Range(0.0f, 360.0f);
-                Instantiate(throwObject, gameObject.transform.position,r);
+                Quaternion q = new Quaternion();
+                q.x = Random.Range(0.0f, 360.0f);
+                q.y = Random.Range(0.0f, 360.0f);
+                GameObject to = (GameObject)Instantiate(throwObject, gameObject.transform.position,q);
+                Vector2 tmp = target.transform.position - gameObject.transform.position;
+                tmp.Normalize();
+                to.GetComponent<Rigidbody2D>().velocity = tmp;
+             
                 startTime = Time.time;
             }
         }

@@ -140,7 +140,7 @@ namespace DynamicLight2D
 			// los angulos calcuados se encuentran en cuadrantes mixtos (1 y 4)
 			bool lows = false; // check si hay menores a -0.5
 			bool his = false; // check si hay mayores a 2.0
-			float magRange = 0.15f;
+			float magRange = 0.35f;
 			
 			List <verts> tempVerts = new List<verts>();
 			
@@ -476,7 +476,9 @@ namespace DynamicLight2D
 			lightMesh.triangles = triangles;												
 			//lightMesh.RecalculateNormals();
 			GetComponent<Renderer>().sharedMaterial = lightMaterial;
-		}
+            GetComponent<Renderer>().sortingLayerName = "back_objects";
+
+        }
 		
 		void sortList(List<verts> lista){
 			lista.Sort((item1, item2) => (item2.angle.CompareTo(item1.angle)));

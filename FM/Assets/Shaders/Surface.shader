@@ -23,7 +23,7 @@ Shader "Splatter/Surface"
 	}
 
 		Cull Off
-		Lighting Off
+		Lighting On
 		ZWrite Off
 		Fog{ Mode Off }
 		Blend One OneMinusSrcAlpha

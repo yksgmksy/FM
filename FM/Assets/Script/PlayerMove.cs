@@ -14,10 +14,12 @@ public class PlayerMove : MonoBehaviour {
     bool isJumping;
 
     public Vector3 MovingPostion; //처음위치로부터 움직인 거리
+    Vector3 firstPosition;
 
     void Start () {
 
         MovingPostion = Vector3.zero;
+        firstPosition = gameObject.transform.position;
         movement = Vector3.zero;
         isJumping = false;
 
@@ -73,7 +75,7 @@ public class PlayerMove : MonoBehaviour {
             anim.SetBool("isWalk", false);
 
         transform.position += moveVelocity * (movePower) * Time.deltaTime;
-        MovingPostion += moveVelocity * (movePower) * Time.deltaTime;
+        MovingPostion = transform.position - firstPosition ;
     }
 }
 

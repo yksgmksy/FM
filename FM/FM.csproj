@@ -180,6 +180,8 @@
     <Compile Include="Assets\Script\Dialog.cs" />
     <Compile Include="Assets\Script\EdgeCol_With_BG.cs" />
     <Compile Include="Assets\Script\EffectTime.cs" />
+    <Compile Include="Assets\Script\Message_Protocol.cs" />
+    <Compile Include="Assets\Script\NPC_Manager.cs" />
     <Compile Include="Assets\Script\NPC_Talk.cs" />
     <Compile Include="Assets\Script\NPC_ThrowObject.cs" />
     <Compile Include="Assets\Script\PlayerMove.cs" />
@@ -206,6 +208,7 @@
     <None Include="Assets\PixelPerfectCamera\background_art_license.txt" />
     <None Include="Assets\RainMaker\Prefab\RainShader.shader" />
     <None Include="Assets\RainMaker\Readme.txt" />
+    <None Include="Assets\Resources\little_girl.txt" />
     <None Include="Assets\Shaders\2DBlend.shader" />
     <None Include="Assets\Shaders\2DDayNight.shader" />
     <None Include="Assets\Shaders\Splatter.shader" />

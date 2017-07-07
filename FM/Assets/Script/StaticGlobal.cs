@@ -67,8 +67,4 @@ public class StaticGlobal : MonoBehaviour {
             startTime = Time.time;
         }
     }
-    //void OnGUI()
-    //{
-    //    GUI.TextArea(new Rect(10f, 10f, 100f, 20f), "A");
-    //}
 }

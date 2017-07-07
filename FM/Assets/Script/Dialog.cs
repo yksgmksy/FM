@@ -1,25 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MessageProtocol;
 
 public class Dialog : MonoBehaviour
 {
-
+    sendmessage my_answer;
     bool showDialog = false;
     string answer = "";
 
     Canvas myDialogBox;
 
-    IEnumerator Start()
+    void Start()
     {
         myDialogBox = gameObject.GetComponentInChildren<Canvas>();
         myDialogBox.enabled = false;
-        yield return StartCoroutine("ShowDialog"); //다른 코루틴이 끝날 때까지 대기
-        yield return StartCoroutine(answer);
     }
+
+    void Answer_Question(sendmessage sm)
+    {
+        my_answer.answer_num = sm.answer_num;
+        my_answer.dialog_num = sm.dialog_num;
+        my_answer.dialog_subject = sm.dialog_subject;
+        my_answer.isAnswer = sm.isAnswer;
+        StartCoroutine("ShowDialog");
+    }
+
     //answer 에 값이 들어가기 전까지는 코루틴이 끝나지 않음
     IEnumerator ShowDialog()
     {
+        answer = "";
         showDialog = true;
         do
         {
@@ -45,13 +55,12 @@ public class Dialog : MonoBehaviour
     {
         if (showDialog)
         {
-            if (GUI.Button(new Rect(10f, 10f, 100f, 20f), "A"))
+            for (int i = 0; i < my_answer.answer_num; ++i)
             {
-                answer = "ActionA";
-            }
-            else if (GUI.Button(new Rect(10f, 50f, 100f, 20f), "B"))
-            {
-                answer = "ActionB";
+                if (GUI.Button(new Rect(10f, 10f + i*20f, 100f, 20f), i+"번째 대답"))
+                {
+                    answer = "Action" + i;
+                }
             }
         }
     }

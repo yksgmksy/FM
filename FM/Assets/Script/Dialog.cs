@@ -23,7 +23,7 @@ public class Dialog : MonoBehaviour
         my_answer.dialog_num = sm.dialog_num;
         my_answer.dialog_subject = sm.dialog_subject;
         my_answer.isAnswer = sm.isAnswer;
-        StartCoroutine("ShowDialog");
+        StartCoroutine("ShowDialog"); //대화가 끝나면 시작되는 함수
     }
 
     //answer 에 값이 들어가기 전까지는 코루틴이 끝나지 않음

@@ -103,15 +103,32 @@ namespace DynamicLight2D
 		
 		
 		void getAllMeshes(){
-			//allMeshes = FindObjectsOfType(typeof(PolygonCollider2D)) as PolygonCollider2D[];
-			
-			
+            //allMeshes = FindObjectsOfType(typeof(PolygonCollider2D)) as PolygonCollider2D[];
+
+            int poligonCount = 0;
 			Collider2D [] allColl2D = Physics2D.OverlapCircleAll(transform.position, lightRadius, layer);
-			allMeshes = new PolygonCollider2D[allColl2D.Length];
-			
+            
+            for (int i = 0; i < allColl2D.Length; i++)
+            {
+                if (allColl2D[i].GetType() == typeof(PolygonCollider2D))
+                    poligonCount++;
+            }
+            allMeshes = new PolygonCollider2D[poligonCount];
+
+
+            int count=0;
 			for (int i=0; i<allColl2D.Length; i++) {
-				allMeshes[i] = (PolygonCollider2D)allColl2D[i];
-			}
+                if (allColl2D[i].GetType() == typeof(BoxCollider2D))
+                {
+                    Debug.Log("박스");
+                    count++;
+                }
+                else
+                {
+                    Debug.Log("노박스");
+                    allMeshes[i - count] = (PolygonCollider2D)allColl2D[i];
+                }
+            }
 			
 			
 			

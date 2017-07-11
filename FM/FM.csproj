@@ -177,6 +177,7 @@
     <Compile Include="Assets\RainMaker\Prefab\RainCollision.cs" />
     <Compile Include="Assets\RainMaker\Prefab\RainScript.cs" />
     <Compile Include="Assets\RainMaker\Prefab\RainScript2D.cs" />
+    <Compile Include="Assets\Script\Choice_Manager.cs" />
     <Compile Include="Assets\Script\Dialog.cs" />
     <Compile Include="Assets\Script\EdgeCol_With_BG.cs" />
     <Compile Include="Assets\Script\EffectTime.cs" />
@@ -208,6 +209,7 @@
     <None Include="Assets\PixelPerfectCamera\background_art_license.txt" />
     <None Include="Assets\RainMaker\Prefab\RainShader.shader" />
     <None Include="Assets\RainMaker\Readme.txt" />
+    <None Include="Assets\Resources\choice_dialog.txt" />
     <None Include="Assets\Resources\little_girl.txt" />
     <None Include="Assets\Shaders\2DBlend.shader" />
     <None Include="Assets\Shaders\2DDayNight.shader" />

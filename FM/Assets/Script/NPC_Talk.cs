@@ -39,25 +39,34 @@ public class NPC_Talk : NPC_Manager {
         main_dialog.max_dialog_count = main_dialog.npc_dialog.Count - 1;
         quest_dialog.max_dialog_count = quest_dialog.npc_dialog.Count - 1;
 
-        state_of_dialog = 1;
+        state_of_dialog = 2;
+    }
+
+    void feedback_to_player(playermessage pm)
+    {
+        Debug.Log(pm.player_answer);
     }
 
     IEnumerator TalkStart()
     {
         while (true)
         {
-            if ( (state_of_dialog == (int)Dialog.NO_MEAN && nomean_dialog.npc_dialog[number_of_dialog_nomean].Length <= npc_Text.text.Length) ||
-                (state_of_dialog == (int)Dialog.MAIN && main_dialog.npc_dialog[number_of_dialog_main].Length <= npc_Text.text.Length) ||
-                (state_of_dialog == (int)Dialog.QUEST && quest_dialog.npc_dialog[number_of_dialog_quest].Length <= npc_Text.text.Length))
+            if ( (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN && nomean_dialog.npc_dialog[number_of_dialog_nomean].Length <= npc_Text.text.Length) ||
+                (state_of_dialog == (int)StaticGlobal.Dialog.MAIN && main_dialog.npc_dialog[number_of_dialog_main].Length <= npc_Text.text.Length) ||
+                (state_of_dialog == (int)StaticGlobal.Dialog.QUEST && quest_dialog.npc_dialog[number_of_dialog_quest].Length <= npc_Text.text.Length))
             {
                 stringCount = 0;
                 StartCoroutine("TalkEnd");
-
+                
                 //메세지는 주고 받기는 MAIN과 QUEST 상태에서만 진행
-                if( state_of_dialog == (int)Dialog.MAIN)
+                if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN)
+                {
                     dialogTarget.SendMessage("Answer_Question", send_list[number_of_dialog_main], SendMessageOptions.RequireReceiver);
-                if (state_of_dialog == (int)Dialog.QUEST)
-                    dialogTarget.SendMessage("Answer_Question", send_list[number_of_dialog_main+number_of_dialog_quest], SendMessageOptions.RequireReceiver);
+                }
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST)
+                {
+                    dialogTarget.SendMessage("Answer_Question", send_list[main_dialog.max_dialog_count + number_of_dialog_quest+1], SendMessageOptions.RequireReceiver);
+                }
                 yield break; //코루틴 종료
             }
 
@@ -65,23 +74,27 @@ public class NPC_Talk : NPC_Manager {
             if (Input.GetKey(KeyCode.R))
             {
                 //대화 스킵입니다
-                if (state_of_dialog == (int)Dialog.NO_MEAN) npc_Text.text = nomean_dialog.npc_dialog[number_of_dialog_nomean];
-                else if (state_of_dialog == (int)Dialog.MAIN) npc_Text.text = main_dialog.npc_dialog[number_of_dialog_main];
-                else if (state_of_dialog == (int)Dialog.QUEST) npc_Text.text = quest_dialog.npc_dialog[number_of_dialog_quest];
+                if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) npc_Text.text = nomean_dialog.npc_dialog[number_of_dialog_nomean];
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) npc_Text.text = main_dialog.npc_dialog[number_of_dialog_main];
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) npc_Text.text = quest_dialog.npc_dialog[number_of_dialog_quest];
                 stringCount = 0;
                 StartCoroutine("TalkEnd");
 
-                if (state_of_dialog == (int)Dialog.MAIN)
+                if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN)
+                {
                     dialogTarget.SendMessage("Answer_Question", send_list[number_of_dialog_main], SendMessageOptions.RequireReceiver);
-                if (state_of_dialog == (int)Dialog.QUEST)
-                    dialogTarget.SendMessage("Answer_Question", send_list[number_of_dialog_main+number_of_dialog_quest], SendMessageOptions.RequireReceiver);
+                }
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST)
+                {
+                    dialogTarget.SendMessage("Answer_Question", send_list[main_dialog.max_dialog_count + number_of_dialog_quest +1], SendMessageOptions.RequireReceiver);
+                }
                 yield break; //코루틴 종료
             }
             else
             {
-                if (state_of_dialog == (int)Dialog.NO_MEAN) npc_Text.text += nomean_dialog.npc_dialog[number_of_dialog_nomean][stringCount];
-                else if (state_of_dialog == (int)Dialog.MAIN) npc_Text.text += main_dialog.npc_dialog[number_of_dialog_main][stringCount];
-                else if (state_of_dialog == (int)Dialog.QUEST) npc_Text.text += quest_dialog.npc_dialog[number_of_dialog_quest][stringCount];
+                if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) npc_Text.text += nomean_dialog.npc_dialog[number_of_dialog_nomean][stringCount];
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) npc_Text.text += main_dialog.npc_dialog[number_of_dialog_main][stringCount];
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) npc_Text.text += quest_dialog.npc_dialog[number_of_dialog_quest][stringCount];
                 stringCount++;
             }
             yield return new WaitForSeconds(0.1f);
@@ -92,20 +105,14 @@ public class NPC_Talk : NPC_Manager {
     {
         while(true)
         {
-            //질문에대한 답을 해야함 두번째 인자는 대답 갯수
-            //if (state_of_dialog == (int)Dialog.NO_MEAN) number_of_dialog_nomean;
-            //else if (state_of_dialog == (int)Dialog.MAIN) number_of_dialog_main;
-            //else if (state_of_dialog == (int)Dialog.QUEST) number_of_dialog_quest;
-           
-            
             if (Input.GetKeyDown(KeyCode.E))
             {
                 myDialogBox.enabled = false;
                 npc_Text.text = "";
 
-                if ( (state_of_dialog == (int)Dialog.NO_MEAN && nomean_dialog.max_dialog_count > GetDialogNum(state_of_dialog) ) ||
-                    (state_of_dialog == (int)Dialog.MAIN && main_dialog.max_dialog_count > GetDialogNum(state_of_dialog) ) ||
-                    (state_of_dialog == (int)Dialog.QUEST && quest_dialog.max_dialog_count > GetDialogNum(state_of_dialog)))
+                if ( (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN && nomean_dialog.max_dialog_count > GetDialogNum(state_of_dialog) ) ||
+                    (state_of_dialog == (int)StaticGlobal.Dialog.MAIN && main_dialog.max_dialog_count > GetDialogNum(state_of_dialog) ) ||
+                    (state_of_dialog == (int)StaticGlobal.Dialog.QUEST && quest_dialog.max_dialog_count > GetDialogNum(state_of_dialog)))
                     NextDialog(state_of_dialog);
                 break;
             }

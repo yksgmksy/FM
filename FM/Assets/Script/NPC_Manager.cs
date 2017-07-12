@@ -8,13 +8,6 @@ using MessageProtocol;
 
 public class NPC_Manager : MonoBehaviour {
 
-    public enum Dialog
-    {
-        NO_MEAN = 0,
-        MAIN,
-        QUEST
-    }
-
     protected struct no_mean_dialogs
     {
         public List<string> npc_dialog; //대화저장
@@ -41,7 +34,7 @@ public class NPC_Manager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         
-        state_of_dialog = (int)Dialog.NO_MEAN;
+        state_of_dialog = (int)StaticGlobal.Dialog.NO_MEAN;
         number_of_dialog_nomean = 0;
         number_of_dialog_main = 0;
         number_of_dialog_quest = 0;
@@ -49,22 +42,22 @@ public class NPC_Manager : MonoBehaviour {
 	
     protected void NextDialog(int state_of_dialog)
     {
-        if(state_of_dialog == (int)Dialog.NO_MEAN) number_of_dialog_nomean++;
-        else if (state_of_dialog == (int)Dialog.MAIN) number_of_dialog_main++;
-        else if (state_of_dialog == (int)Dialog.QUEST) number_of_dialog_quest++;
+        if(state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) number_of_dialog_nomean++;
+        else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) number_of_dialog_main++;
+        else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) number_of_dialog_quest++;
     }
     protected int GetDialogNum(int state_of_dialog) {
-        if (state_of_dialog == (int)Dialog.NO_MEAN) return number_of_dialog_nomean;
-        else if (state_of_dialog == (int)Dialog.MAIN) return number_of_dialog_main;
-        else if (state_of_dialog == (int)Dialog.QUEST) return number_of_dialog_quest;
+        if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) return number_of_dialog_nomean;
+        else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) return number_of_dialog_main;
+        else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) return number_of_dialog_quest;
         return -1;
     }
 
     protected void SetDialogNum(int count , int state_of_dialog)
     {
-        if (state_of_dialog == (int)Dialog.NO_MEAN) number_of_dialog_nomean = count;
-        else if (state_of_dialog == (int)Dialog.MAIN) number_of_dialog_main = count;
-        else if (state_of_dialog == (int)Dialog.QUEST) number_of_dialog_quest = count;
+        if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) number_of_dialog_nomean = count;
+        else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) number_of_dialog_main = count;
+        else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) number_of_dialog_quest = count;
     }
 
     protected void ChangeDialogState(int state)
@@ -102,19 +95,19 @@ public class NPC_Manager : MonoBehaviour {
             if (source == "[NO_MEAN]")
             {
                 count = 0;
-                text_state = (int)Dialog.NO_MEAN;
+                text_state = (int)StaticGlobal.Dialog.NO_MEAN;
                 source = sr.ReadLine();
             }
             else if (source == "[MAIN]")
             {
                 count = 0;
-                text_state = (int)Dialog.MAIN;
+                text_state = (int)StaticGlobal.Dialog.MAIN;
                 source = sr.ReadLine();
             }
             else if (source == "[QUEST]")
             {
                 count = 0;
-                text_state = (int)Dialog.QUEST;
+                text_state = (int)StaticGlobal.Dialog.QUEST;
                 source = sr.ReadLine();
             }
 
@@ -127,6 +120,7 @@ public class NPC_Manager : MonoBehaviour {
                 tmp_sm.dialog_num = int.Parse(tmp[2]);
                 tmp_sm.dialog_subject = text_state;
                 tmp_sm.isAnswer = false;
+                tmp_sm.sendObject = this.gameObject;
                 sm_list.Add(tmp_sm);
                 source = sr.ReadLine();
             }
@@ -136,6 +130,7 @@ public class NPC_Manager : MonoBehaviour {
                 tmp_sm.dialog_num = int.Parse(tmp[2]);
                 tmp_sm.dialog_subject = text_state;
                 tmp_sm.isAnswer = true;
+                tmp_sm.sendObject = this.gameObject;
                 sm_list.Add(tmp_sm);
                 source = sr.ReadLine();
             }
@@ -144,12 +139,12 @@ public class NPC_Manager : MonoBehaviour {
             source = source.Replace("\\", Environment.NewLine);
 
             //리스트에 해당 텍스트 추가
-            if (text_state == (int)Dialog.NO_MEAN) dialogBuf_no_mean.npc_dialog.Add(source);
-            else if (text_state == (int)Dialog.MAIN)
+            if (text_state == (int)StaticGlobal.Dialog.NO_MEAN) dialogBuf_no_mean.npc_dialog.Add(source);
+            else if (text_state == (int)StaticGlobal.Dialog.MAIN)
             {
                 dialogBuf_main.npc_dialog.Add(source);
             }
-            else if (text_state == (int)Dialog.QUEST)
+            else if (text_state == (int)StaticGlobal.Dialog.QUEST)
             {
                 dialogBuf_quest.npc_dialog.Add(source);
             }

@@ -178,7 +178,6 @@
     <Compile Include="Assets\RainMaker\Prefab\RainScript.cs" />
     <Compile Include="Assets\RainMaker\Prefab\RainScript2D.cs" />
     <Compile Include="Assets\Script\Choice_Manager.cs" />
-    <Compile Include="Assets\Script\Dialog.cs" />
     <Compile Include="Assets\Script\EdgeCol_With_BG.cs" />
     <Compile Include="Assets\Script\EffectTime.cs" />
     <Compile Include="Assets\Script\Message_Protocol.cs" />
@@ -186,6 +185,7 @@
     <Compile Include="Assets\Script\NPC_Talk.cs" />
     <Compile Include="Assets\Script\NPC_ThrowObject.cs" />
     <Compile Include="Assets\Script\PlayerMove.cs" />
+    <Compile Include="Assets\Script\Player_Answer.cs" />
     <Compile Include="Assets\Script\StaticGlobal.cs" />
     <Compile Include="Assets\Script\Sun_Moon_Move.cs" />
     <Compile Include="Assets\Script\Throwing.cs" />

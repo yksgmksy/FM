@@ -14,6 +14,18 @@ public class StaticGlobal : MonoBehaviour {
         Psychopath, //싸이코패스
         Violent     //폭력적인
     }
+    public enum Dialog
+    {
+        NO_MEAN = 0,
+        MAIN,
+        QUEST
+    }
+    public enum NPC_ID
+    {
+        little_girl = 0
+    }
+
+    public const int NPC_LITTLE_GIRL = 1;
 
     public struct gameTime
     {
@@ -29,6 +41,7 @@ public class StaticGlobal : MonoBehaviour {
     public static bool StopTime;
     public static float Intimacy; //친밀도 -1000 ~ 1000
     public static int mentalCondition; // 멘탈상태 state
+
     private void Start()
     {
         startTime = Time.time;

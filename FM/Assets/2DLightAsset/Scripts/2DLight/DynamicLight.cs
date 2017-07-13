@@ -110,7 +110,7 @@ namespace DynamicLight2D
             
             for (int i = 0; i < allColl2D.Length; i++)
             {
-                if (allColl2D[i].GetType() == typeof(PolygonCollider2D))
+                if (allColl2D[i].GetType() == typeof(PolygonCollider2D) && allColl2D[i].gameObject.layer != LayerMask.NameToLayer("Tiles"))
                     poligonCount++;
             }
             allMeshes = new PolygonCollider2D[poligonCount];
@@ -118,14 +118,14 @@ namespace DynamicLight2D
 
             int count=0;
 			for (int i=0; i<allColl2D.Length; i++) {
-                if (allColl2D[i].GetType() == typeof(BoxCollider2D))
+                if (allColl2D[i].GetType() == typeof(BoxCollider2D) ||  allColl2D[i].gameObject.layer == LayerMask.NameToLayer("Tiles") )
                 {
-                    Debug.Log("박스");
+                    //Debug.Log("박스");
                     count++;
                 }
                 else
                 {
-                    Debug.Log("노박스");
+                    //Debug.Log("노박스");
                     allMeshes[i - count] = (PolygonCollider2D)allColl2D[i];
                 }
             }

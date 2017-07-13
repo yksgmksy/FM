@@ -48,7 +48,7 @@ public class Player_Answer : Choice_Manager
     IEnumerator ShowDialog()
     {
         answer = string.Empty;
-        Debug.Log("들어왓음");
+        //Debug.Log("들어왓음");
         showDialog = true;
         do
         {

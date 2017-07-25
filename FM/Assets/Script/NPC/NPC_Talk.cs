@@ -21,6 +21,8 @@ public class NPC_Talk : NPC_Manager {
     SpriteRenderer npcSprite;
     List<sendmessage> send_list;
 
+    playermessage playerMessage;
+
     void Start()
     {
         nomean_dialog.npc_dialog = new List<string>();
@@ -42,8 +44,32 @@ public class NPC_Talk : NPC_Manager {
         state_of_dialog = 2;
     }
 
+    void init_and_next_Dialog()
+    {
+        myDialogBox.enabled = false;
+        npc_Text.text = "";
+
+        dialogTarget.SendMessage("Can_Move", SendMessageOptions.DontRequireReceiver);
+
+        if ((state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN && nomean_dialog.max_dialog_count > GetDialogNum(state_of_dialog)) ||
+            (state_of_dialog == (int)StaticGlobal.Dialog.MAIN && main_dialog.max_dialog_count > GetDialogNum(state_of_dialog)) ||
+            (state_of_dialog == (int)StaticGlobal.Dialog.QUEST && quest_dialog.max_dialog_count > GetDialogNum(state_of_dialog)))
+            NextDialog(state_of_dialog);
+    }
+
     void feedback_to_player(playermessage pm)
     {
+        playerMessage = pm;
+       
+        if (playerMessage.answer_num != 0)
+        {
+            StopCoroutine("TalkEnd");
+
+            init_and_next_Dialog();
+
+            dialogTarget.SendMessage("Can_Move", SendMessageOptions.DontRequireReceiver);
+            
+        }
         //Debug.Log(pm.player_answer);
     }
 
@@ -101,19 +127,15 @@ public class NPC_Talk : NPC_Manager {
         }
     }
 
+    //대화창이 뜰 때에는 스킵이 될 수 없어야함
+    //그외엔 스킵 가능
     IEnumerator TalkEnd()
     {
         while(true)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) && false == dialogTarget.GetComponent<Player_Answer>().Get_showDialog() )
             {
-                myDialogBox.enabled = false;
-                npc_Text.text = "";
-
-                if ( (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN && nomean_dialog.max_dialog_count > GetDialogNum(state_of_dialog) ) ||
-                    (state_of_dialog == (int)StaticGlobal.Dialog.MAIN && main_dialog.max_dialog_count > GetDialogNum(state_of_dialog) ) ||
-                    (state_of_dialog == (int)StaticGlobal.Dialog.QUEST && quest_dialog.max_dialog_count > GetDialogNum(state_of_dialog)))
-                    NextDialog(state_of_dialog);
+                init_and_next_Dialog();
                 break;
             }
             yield return null;
@@ -136,6 +158,24 @@ public class NPC_Talk : NPC_Manager {
 
                 dialogTarget = collision.gameObject;
                 myDialogBox.enabled = true;//말풍선 띄우기
+
+                //캐릭터 움직이기
+                Vector2 tmp = new Vector2();
+                SpriteRenderer csr = dialogTarget.GetComponent<SpriteRenderer>();
+                if (dialogTarget.transform.position.x < gameObject.transform.position.x)
+                {
+                    tmp = new Vector2(-1, 1);
+                    if (csr.flipX == true) csr.flipX = false;
+                }
+                else
+                {
+                    tmp = new Vector2(1, 1);
+                    if (csr.flipX == false) csr.flipX = true;
+                }
+
+                dialogTarget.SendMessage("Cannot_Move", tmp, SendMessageOptions.DontRequireReceiver);
+                dialogTarget.GetComponent<Animator>().SetBool("isWalk", false);
+
                 StartCoroutine("TalkStart");       //코루틴 시작
             }
     }

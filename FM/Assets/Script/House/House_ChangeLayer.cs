@@ -12,7 +12,7 @@ public class House_ChangeLayer : MonoBehaviour {
     public int floor;
 	void Start () {
         sr = gameObject.GetComponent<SpriteRenderer>();
-        ht = transform.parent.GetComponentInChildren<House_trigger>();
+        ht = transform.parent.transform.parent.GetComponentInChildren<House_trigger>();
         firstSortingOrder = sr.sortingOrder;
     }
 	

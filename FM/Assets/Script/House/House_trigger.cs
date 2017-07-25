@@ -5,6 +5,7 @@ using UnityEngine;
 //집으로 통하는 통로에 대한 스크립트
 public class House_trigger : MonoBehaviour {
 
+    public Transform movePosition;
     bool isInside = false;
     int nowfloor = 0;
 
@@ -21,6 +22,7 @@ public class House_trigger : MonoBehaviour {
         return nowfloor;
     }
 
+    //어둡게만듬 메쉬포함
     void workInRendererComponent(TimeColor_MeshRender[] mr, TimeColor_SpriteRender[] sr , bool isInside)
     {
         if (isInside)
@@ -38,6 +40,8 @@ public class House_trigger : MonoBehaviour {
                 i.SendMessage("outsideMode");
         }
     }
+
+    //어둡게만듬
     void workInRendererComponent(TimeColor_SpriteRender[] sr,bool isInside)
     {
         if (isInside)
@@ -52,6 +56,7 @@ public class House_trigger : MonoBehaviour {
         }
     }
 
+    //태그로 해당 객체를 찾음
     void findRendererComponent(bool isInside)
     {
         GameObject npcs = GameObject.FindWithTag("npcs");
@@ -69,10 +74,10 @@ public class House_trigger : MonoBehaviour {
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player")) //플레이어만 상호작용
         {
-            if (Input.GetKeyDown(KeyCode.E) && !isInside) //E버튼
+            if (Input.GetKeyDown(KeyCode.E) )//&& !isInside) //E버튼
             {
                 collision.gameObject.GetComponentInChildren<Fade_In_Out>().SendMessage("GoFadeIn"); //이동시 페이드 인효과를줌
-                transform.parent.GetComponent<SpriteRenderer>().sortingOrder = 0;
+                //transform.parent.GetComponent<SpriteRenderer>().sortingOrder = 0;
 
                 //현재 상태 저장( 플레이어 대신에 집의 입구를 가르키는 이 스크립트에서 현재 layer와 inside를 )
                 isInside = true;
@@ -80,18 +85,19 @@ public class House_trigger : MonoBehaviour {
 
                 //control shader uniform by SendMessage
                 transform.parent.GetComponentInChildren<House_InOut_Collider>().SendMessage("Enable_Trigger");
-                findRendererComponent(isInside);
+
+                collision.gameObject.transform.position = movePosition.position;
+                //findRendererComponent(isInside);
             }
-            else if (Input.GetKeyDown(KeyCode.E) && isInside) //E버튼
+            /*else if (Input.GetKeyDown(KeyCode.E) && isInside) //E버튼
             {
                 collision.gameObject.GetComponentInChildren<Fade_In_Out>().SendMessage("GoFadeIn"); 
-                transform.parent.GetComponent<SpriteRenderer>().sortingOrder = 10;
+                //transform.parent.GetComponent<SpriteRenderer>().sortingOrder = 10;
                 isInside = false;
                 nowfloor = 0;
                 transform.parent.GetComponentInChildren<House_InOut_Collider>().SendMessage("Enable_Trigger");
-                findRendererComponent(isInside);
-            }
-            
+                //findRendererComponent(isInside);
+            }*/
         }
     }
 }

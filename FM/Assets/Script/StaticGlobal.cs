@@ -39,8 +39,9 @@ public class StaticGlobal : MonoBehaviour {
     public float TenMin_Time; //분당 시간
     public int DebugHour;
     public static bool StopTime;
-    public static float Intimacy; //친밀도 -1000 ~ 1000
+    public static int Intimacy; //친밀도 -100 ~ 100
     public static int mentalCondition; // 멘탈상태 state
+    public static int money;
 
     private void Start()
     {
@@ -53,6 +54,9 @@ public class StaticGlobal : MonoBehaviour {
 
         mentalCondition = (int)Mental.Nomal;
         StopTime = false;
+
+        Intimacy = 0;
+        money = 5000;
     }
 
     private void Update()

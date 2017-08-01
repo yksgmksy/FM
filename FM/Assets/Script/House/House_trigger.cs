@@ -6,7 +6,7 @@ using UnityEngine;
 public class House_trigger : MonoBehaviour {
 
     public Transform movePosition;
-    bool isInside = false;
+    bool isInside = true;
     int nowfloor = 0;
 
     public bool GetisInside()
@@ -87,6 +87,7 @@ public class House_trigger : MonoBehaviour {
                 transform.parent.GetComponentInChildren<House_InOut_Collider>().SendMessage("Enable_Trigger");
 
                 collision.gameObject.transform.position = movePosition.position;
+                collision.gameObject.GetComponent<PlayerMove>().SetPastPosition(movePosition.position);
                 //findRendererComponent(isInside);
             }
             /*else if (Input.GetKeyDown(KeyCode.E) && isInside) //E버튼

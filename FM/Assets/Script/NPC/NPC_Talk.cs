@@ -6,12 +6,18 @@ using MessageProtocol;
 
 public class NPC_Talk : NPC_Manager {
 
+    public GameObject subtitle;
+    Text[] subtitle_texts;
+
     Canvas myDialogBox;
     Text npc_Text;     //텍스트 컴포넌트
 
+    public bool subtitleMode;
     public string data_name;
+    public int dialog_state;
 
     int stringCount = 0; //한글자씩 출력
+    bool isDialog = false;
 
     GameObject dialogTarget;
 
@@ -25,6 +31,11 @@ public class NPC_Talk : NPC_Manager {
 
     void Start()
     {
+        subtitle_texts = subtitle.GetComponentsInChildren<Text>();
+        subtitle_texts[0].text = string.Empty;
+        subtitle_texts[1].text = string.Empty;
+        subtitle.SetActive(false);
+
         nomean_dialog.npc_dialog = new List<string>();
         main_dialog.npc_dialog = new List<string>();
         quest_dialog.npc_dialog = new List<string>();
@@ -34,22 +45,41 @@ public class NPC_Talk : NPC_Manager {
         myDialogBox = gameObject.GetComponentInChildren<Canvas>(); //
         myDialogBox.enabled = false;
         npc_Text = gameObject.GetComponentInChildren<Text>();
-        npc_Text.text = "";
-        
+        npc_Text.text = string.Empty;
+
+
         Parse(data_name, nomean_dialog, main_dialog, quest_dialog , send_list);
         nomean_dialog.max_dialog_count = nomean_dialog.npc_dialog.Count-1;
         main_dialog.max_dialog_count = main_dialog.npc_dialog.Count - 1;
         quest_dialog.max_dialog_count = quest_dialog.npc_dialog.Count - 1;
 
-        state_of_dialog = 2;
+        state_of_dialog = dialog_state;
     }
 
-    void init_and_next_Dialog()
+    public bool Get_IsDialog()
+    {
+        return isDialog;
+    }
+
+    void talkStart(GameObject ao)
+    {
+        dialogTarget = ao;
+        if (!subtitleMode)
+            myDialogBox.enabled = true;
+        StartCoroutine("TalkStart");
+    }
+
+    void init_and_next_Dialog(bool canmove)
     {
         myDialogBox.enabled = false;
-        npc_Text.text = "";
+        npc_Text.text = string.Empty;
 
-        dialogTarget.SendMessage("Can_Move", SendMessageOptions.DontRequireReceiver);
+        subtitle_texts[0].text = string.Empty;
+        subtitle_texts[1].text = string.Empty;
+        subtitle.SetActive(false);
+
+        if (canmove)
+            dialogTarget.SendMessage("Can_Move", SendMessageOptions.DontRequireReceiver);
 
         if ((state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN && nomean_dialog.max_dialog_count > GetDialogNum(state_of_dialog)) ||
             (state_of_dialog == (int)StaticGlobal.Dialog.MAIN && main_dialog.max_dialog_count > GetDialogNum(state_of_dialog)) ||
@@ -65,7 +95,7 @@ public class NPC_Talk : NPC_Manager {
         {
             StopCoroutine("TalkEnd");
 
-            init_and_next_Dialog();
+            init_and_next_Dialog(true);
 
             dialogTarget.SendMessage("Can_Move", SendMessageOptions.DontRequireReceiver);
             
@@ -75,6 +105,7 @@ public class NPC_Talk : NPC_Manager {
 
     IEnumerator TalkStart()
     {
+        isDialog = true;
         while (true)
         {
             if ( (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN && nomean_dialog.npc_dialog[number_of_dialog_nomean].Length <= npc_Text.text.Length) ||
@@ -93,16 +124,24 @@ public class NPC_Talk : NPC_Manager {
                 {
                     dialogTarget.SendMessage("Answer_Question", send_list[main_dialog.max_dialog_count + number_of_dialog_quest+1], SendMessageOptions.RequireReceiver);
                 }
+                Debug.Log("종료1");
                 yield break; //코루틴 종료
             }
 
 
             if (Input.GetKey(KeyCode.R))
             {
+                Debug.Log("종료");
                 //대화 스킵입니다
                 if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) npc_Text.text = nomean_dialog.npc_dialog[number_of_dialog_nomean];
                 else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) npc_Text.text = main_dialog.npc_dialog[number_of_dialog_main];
                 else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) npc_Text.text = quest_dialog.npc_dialog[number_of_dialog_quest];
+
+                //자막모드
+                if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) subtitle_texts[1].text = nomean_dialog.npc_dialog[number_of_dialog_nomean];
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) subtitle_texts[1].text = main_dialog.npc_dialog[number_of_dialog_main];
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) subtitle_texts[1].text = quest_dialog.npc_dialog[number_of_dialog_quest];
+
                 stringCount = 0;
                 StartCoroutine("TalkEnd");
 
@@ -118,9 +157,15 @@ public class NPC_Talk : NPC_Manager {
             }
             else
             {
+                //말풍선
                 if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) npc_Text.text += nomean_dialog.npc_dialog[number_of_dialog_nomean][stringCount];
                 else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) npc_Text.text += main_dialog.npc_dialog[number_of_dialog_main][stringCount];
                 else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) npc_Text.text += quest_dialog.npc_dialog[number_of_dialog_quest][stringCount];
+                //자막
+                if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) subtitle_texts[1].text += nomean_dialog.npc_dialog[number_of_dialog_nomean][stringCount];
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) subtitle_texts[1].text += main_dialog.npc_dialog[number_of_dialog_main][stringCount];
+                else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST) subtitle_texts[1].text += quest_dialog.npc_dialog[number_of_dialog_quest][stringCount];
+
                 stringCount++;
             }
             yield return new WaitForSeconds(0.1f);
@@ -135,11 +180,12 @@ public class NPC_Talk : NPC_Manager {
         {
             if (Input.GetKeyDown(KeyCode.E) && false == dialogTarget.GetComponent<Player_Answer>().Get_showDialog() )
             {
-                init_and_next_Dialog();
+                init_and_next_Dialog(true);
                 break;
             }
             yield return null;
         }
+        isDialog = false;
         yield break;
     }
 
@@ -157,7 +203,8 @@ public class NPC_Talk : NPC_Manager {
                     npcSprite.flipX = false;
 
                 dialogTarget = collision.gameObject;
-                myDialogBox.enabled = true;//말풍선 띄우기
+                if(!subtitleMode)
+                    myDialogBox.enabled = true;//말풍선 띄우기
 
                 //캐릭터 움직이기
                 Vector2 tmp = new Vector2();

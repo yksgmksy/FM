@@ -10,7 +10,7 @@ public class TimeColor : MonoBehaviour {
     void Start () {
         sr = gameObject.GetComponent<SpriteRenderer>();
         myColor = sr.color;
-        Debug.Log(myColor);
+       // Debug.Log(myColor);
     }
 	
 	// Update is called once per frame

@@ -16,6 +16,7 @@ public class Teleport : MonoBehaviour {
                 collision.gameObject.GetComponentInChildren<Fade_In_Out>().SendMessage("GoFadeIn"); //이동시 페이드 인효과를줌
                 transform.parent.GetComponentInChildren<House_InOut_Collider>().SendMessage("Enable_Trigger");
                 collision.gameObject.transform.position = movePosition.position;
+                collision.gameObject.GetComponent<PlayerMove>().SetPastPosition(movePosition.position);
                 //findRendererComponent(isInside);
             }
         }

@@ -38,10 +38,12 @@ public class StaticGlobal : MonoBehaviour {
     float startTime;
     public float TenMin_Time; //분당 시간
     public int DebugHour;
+    public int progress;
     public static bool StopTime;
     public static int Intimacy; //친밀도 -100 ~ 100
     public static int mentalCondition; // 멘탈상태 state
     public static int money;
+    public static int stage_progress;
 
     private void Start()
     {
@@ -57,6 +59,7 @@ public class StaticGlobal : MonoBehaviour {
 
         Intimacy = 0;
         money = 5000;
+        stage_progress = progress;
     }
 
     private void Update()

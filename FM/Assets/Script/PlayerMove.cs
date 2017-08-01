@@ -22,7 +22,10 @@ public class PlayerMove : MonoBehaviour {
     Vector2[] standPath = new Vector2[4]; //처음콜라이더
     Vector2[] vps = new Vector2[4]; //엎드릴때 콜라이더
 
+    //입력?
     bool canMove = true;
+
+    bool isLayHit = false;
 
     void Start () {
 
@@ -62,6 +65,11 @@ public class PlayerMove : MonoBehaviour {
         }
     }
 
+    public void SetPastPosition(Vector2 tmp)
+    {
+        pastPosition = tmp;
+    }
+    //움직이는 힘 인자
     void Cannot_Move(Vector2 dir)
     {
         canMove = false;
@@ -75,30 +83,58 @@ public class PlayerMove : MonoBehaviour {
 
     void CheckJump()
     {
-        Vector2 orgin = this.gameObject.transform.position;
-        Vector2 dir = Vector2.down;
-        RaycastHit2D hit = Physics2D.Raycast(orgin, dir, 0.5f, 1 << LayerMask.NameToLayer("Tiles"));
-
-        Debug.DrawLine(orgin, new Vector3(orgin.x, orgin.y+dir.y+ 0.5f, 0));
-        if (hit.collider != null)
+        //현재 프레임 - 이전 프레임 위치 가 음/양 수에 따라 낙하/상승
+        if (gameObject.transform.position.y - pastPosition.y < -0.01f) // 하강
         {
-            anim.SetBool("isJump", false);
+            anim.SetBool("isStay", false);
+            anim.SetBool("isJumping", false);
+            anim.SetBool("isJumpDown", true);
+        }
+        else if (gameObject.transform.position.y - pastPosition.y > 0.005f)// 상승 
+        {
+            anim.SetBool("isStay", false);
+            anim.SetBool("isJumping", true);
             anim.SetBool("isJumpDown", false);
         }
+        else {
+            anim.SetBool("isStay", true);
+            anim.SetBool("isJumping", false);
+            anim.SetBool("isJumpDown", false);
+        }
+        
+        pastPosition = gameObject.transform.position;
+        //Vector2 orgin = this.gameObject.transform.position;
+        //Vector2 dir = Vector2.down;
+        //RaycastHit2D hit = Physics2D.Raycast(orgin, dir, 0.55f, 1 << LayerMask.NameToLayer("Tiles")  |  1<< LayerMask.NameToLayer("passPlatform") );
+
+        //RaycastHit2D hitPlatForm = Physics2D.Raycast(orgin, dir, 0.5f, 1 << LayerMask.NameToLayer("passPlatform"));
+        //Debug.DrawLine(orgin, new Vector3(orgin.x, orgin.y+dir.y+ 0.5f, 0));
+        //if (hit.collider != null)
+        //{
+        //    anim.SetBool("isJumpDown", false);
+        //}
+
+        //if (hitPlatForm.collider != null && anim.GetBool("isJumpDown"))
+        //{
+        //    isLayHit = true;
+        //    return;
+        //}
+        //isLayHit = false;
     }
 
+    public bool GetLayHit()
+    {
+        return isLayHit;
+    }
     void Jump()
     {
-
-        //현재 프레임 - 이전 프레임 위치 가 음/양 수에 따라 낙하/상승
-        if (gameObject.transform.position.y - pastPosition.y <= 0)
-        {
-            anim.SetBool("isJumpDown", true);
-            CheckJump();
-        }
-        pastPosition = gameObject.transform.position;
+        CheckJump();
+        //점프중이아니면
         if (!isJumping)
+        {
             return;
+        }
+
         r.velocity = Vector2.zero;
         Vector2 jumpVelocity = new Vector2(0, jumpPower);
         r.AddForce(jumpVelocity, ForceMode2D.Impulse);
@@ -142,6 +178,18 @@ public class PlayerMove : MonoBehaviour {
         else
             transform.position += moveVelocity * (movePower) * Time.deltaTime;
         MovingPostion = transform.position - firstPosition ;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Tiles") ||
+            collision.gameObject.layer == LayerMask.NameToLayer("passPlatform"))
+        {
+            //모션초기화
+            anim.SetBool("isJump", false);
+            anim.SetBool("isJumpDown", false);
+            //SetPastPosition(collision.gameObject.transform.position);
+        }
     }
     
 }

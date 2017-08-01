@@ -11,22 +11,12 @@ public class House_InOut_Collider : MonoBehaviour {
 	void Start () {
         cols = gameObject.GetComponents<BoxCollider2D>();
         foreach (BoxCollider2D i in cols)
-            i.enabled = false;
+            i.enabled = true;
     }
 
     void Enable_Trigger()
     {
-        if (!my_switch)
-        {
-            my_switch = true;
-            foreach (BoxCollider2D i in cols)
-                i.enabled = true;
-        }
-        else
-        {
-            my_switch = false;
-            foreach (BoxCollider2D i in cols)
-                i.enabled = false;
-        }
+        foreach (BoxCollider2D i in cols)
+            i.enabled = true;
     }
 }

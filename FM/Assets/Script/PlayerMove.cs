@@ -24,7 +24,7 @@ public class PlayerMove : MonoBehaviour {
 
     //입력?
     bool canMove = true;
-
+    bool isOnLadder = false;
     bool isLayHit = false;
 
     void Start () {
@@ -40,21 +40,21 @@ public class PlayerMove : MonoBehaviour {
         col = gameObject.GetComponent<PolygonCollider2D>();
 
         standPath = col.GetPath(0);
-        vps[0] = new Vector2(-0.466f, 0.291f);
-        vps[1] = new Vector2(-0.466f, 0.025f);
-        vps[2] = new Vector2(0.496f,  0.025f);
-        vps[3] = new Vector2(0.496f, 0.291f);
+        vps[0] = new Vector2(-0.1f, 0.4f);
+        vps[1] = new Vector2(-0.1f, -0.4068f);
+        vps[2] = new Vector2(0.1f,  -0.4068f);
+        vps[3] = new Vector2(0.1f, 0.4f);
         
     }
 	
 	void Update () {
-		if(Input.GetButtonDown("Jump") && canMove)
-        {
-            isJumping = true;
-            anim.SetBool("isJump", true);
-        }
-       // Debug.Log(anim.GetFloat("hor"));
-	}
+        if (!isOnLadder)
+            if (Input.GetButtonDown("Jump") && canMove)
+            {
+                isJumping = true;
+                anim.SetBool("isJump", true);
+            }
+    }
 
     void FixedUpdate()
     {
@@ -146,38 +146,83 @@ public class PlayerMove : MonoBehaviour {
     {
         Vector3 moveVelocity = Vector3.zero;
         anim.SetFloat("hor", Mathf.Abs( Input.GetAxisRaw("Horizontal") ));
+        anim.SetFloat("ver", Mathf.Abs(Input.GetAxisRaw("Vertical")));
 
-        if (Input.GetAxisRaw("Vertical") == -1)
+        //사다리에 올라탓을때
+        if (isOnLadder)
         {
-            anim.SetBool("isFacedown", true);
-            col.SetPath(0, vps);
-            //col = crawl;
+            if (Input.GetAxisRaw("Vertical") < 0)
+            {
+                moveVelocity = Vector3.down;
+                
+            }
+            if (Input.GetAxisRaw("Vertical") > 0)
+            {
+                moveVelocity = Vector3.up;
+                
+            }
+            transform.position += moveVelocity * 1 * Time.deltaTime;
         }
         else
         {
-            anim.SetBool("isFacedown", false);
-            col.SetPath(0, standPath);
-        }
-        if (Input.GetAxisRaw("Horizontal") < 0)
-        {
-            moveVelocity = Vector3.left;
-            sr.flipX = true;
-            anim.SetBool("isWalk", true);
-        }
-        if (Input.GetAxisRaw("Horizontal") > 0)
-        {
-            moveVelocity = Vector3.right;
-            sr.flipX = false;
-            anim.SetBool("isWalk", true);
-        }
-        if(Input.GetAxisRaw("Horizontal") ==0)
-            anim.SetBool("isWalk", false);
+            if (Input.GetAxisRaw("Vertical") == -1)
+            {
+                anim.SetBool("isFacedown", true);
+                col.SetPath(0, vps);
+                //col = crawl;
+            }
+            else
+            {
+                anim.SetBool("isFacedown", false);
+                col.SetPath(0, standPath);
+            }
+            if (Input.GetAxisRaw("Horizontal") < 0)
+            {
+                moveVelocity = Vector3.left;
+                sr.flipX = true;
+                anim.SetBool("isWalk", true);
+            }
+            if (Input.GetAxisRaw("Horizontal") > 0)
+            {
+                moveVelocity = Vector3.right;
+                sr.flipX = false;
+                anim.SetBool("isWalk", true);
+            }
+            if (Input.GetAxisRaw("Horizontal") == 0)
+                anim.SetBool("isWalk", false);
 
-        if (anim.GetBool("isFacedown")) 
-            transform.position += moveVelocity * (clawpPower) * Time.deltaTime;
-        else
-            transform.position += moveVelocity * (movePower) * Time.deltaTime;
-        MovingPostion = transform.position - firstPosition ;
+            if (anim.GetBool("isFacedown"))
+                transform.position += moveVelocity * (clawpPower) * Time.deltaTime;
+            else
+                transform.position += moveVelocity * (movePower) * Time.deltaTime;
+            MovingPostion = transform.position - firstPosition;
+        }
+    }
+
+    void MovePlayerY(float y)
+    {
+        transform.position = new Vector2(transform.position.x, transform.position.y + y);
+    }
+    //사다리 오른후 그래비티 적용
+    void SetGravityOn()
+    {
+        isOnLadder = false;
+        r.gravityScale = 1;
+        if (col.isTrigger)
+            col.isTrigger = false;
+    }
+    void SetGravityOff()
+    {
+        isOnLadder = true;
+        r.gravityScale = 0;
+    }
+    void SetLadderMotionOn()
+    {
+        anim.SetBool("isLadder", true);
+    }
+    public bool GetisOnLadder()
+    {
+        return isOnLadder;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -189,9 +234,63 @@ public class PlayerMove : MonoBehaviour {
             anim.SetBool("isJump", false);
             anim.SetBool("isJumpDown", false);
             //SetPastPosition(collision.gameObject.transform.position);
+
+            if (anim.GetBool("isLadder") )
+            {
+                anim.SetBool("isLadder", false);
+                SetGravityOn();
+            }
         }
     }
-    
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ladder_top"))
+        {
+            if (anim.GetBool("isLadder") && Input.GetKey(KeyCode.W))
+            {
+                //올라간다
+                anim.SetTrigger("ladderup_mosition");
+                anim.SetBool("isLadder", false);
+
+                transform.position = new Vector2(collision.gameObject.transform.position.x, transform.position.y);
+                SetGravityOff();
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                //내려간다
+                if(anim.GetBool("isFacedown"))
+                    anim.SetBool("isFacedown", false);
+                if (!isOnLadder)
+                {
+                    anim.SetTrigger("ladderdown_mosition");
+                    transform.position = new Vector2(collision.gameObject.transform.position.x, transform.position.y);
+                    SetGravityOff();
+                    anim.SetBool("isLadder", true);
+                }
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ladder"))
+        {
+            //점프타기불가
+            if(!anim.GetBool("isJumpDown") && !anim.GetBool("isJumping"))
+            if (Input.GetKeyDown(KeyCode.W) )
+            {
+                //모션변경
+                anim.SetBool("isFacedown", false);
+                anim.SetBool("isLadder", true);
+                anim.speed = 1;
+                r.gravityScale = 0;
+                //사다리위치로 이동
+                transform.position = new Vector2(collision.gameObject.transform.position.x, transform.position.y);
+                isOnLadder = true;
+            }
+        }
+        
+    }
 }
 
 

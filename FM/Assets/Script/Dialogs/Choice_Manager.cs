@@ -44,6 +44,7 @@ public class Choice_Manager : MonoBehaviour {
 
         string source = sr.ReadLine();
         playermessage tmp_pm; // message dumy
+        tmp_pm.message = String.Empty;
         int dm = 0;
         int an = 0;
         textset.npc_id = (int)StaticGlobal.NPC_ID.little_girl; //기본초기화
@@ -56,6 +57,16 @@ public class Choice_Manager : MonoBehaviour {
             if (source == "[little_girl]")
             {
                 textset.npc_id = (int)StaticGlobal.NPC_ID.little_girl;
+                source = sr.ReadLine();
+            }
+            else if( source == "[jjindda]")
+            {
+                textset.npc_id = (int)StaticGlobal.NPC_ID.jjindda;
+                source = sr.ReadLine();
+            }
+            else if (source == "[jjindda_door]")
+            {
+                textset.npc_id = (int)StaticGlobal.NPC_ID.jjindda_door;
                 source = sr.ReadLine();
             }
             //대화의 속성 정의
@@ -72,20 +83,20 @@ public class Choice_Manager : MonoBehaviour {
 
             //대화의 메세지를 보낼 기타 속성들을 정의하기위한것
             string[] tmp; //속성값을 받기위한 str
-            tmp = source.Split(',');
+            tmp = source.Split('/');
             if (tmp[0] == "<ANSWER>") //질문이면
             {
                 tmp_pm.dialog_num = int.Parse(tmp[1]);
-                dm = int.Parse(tmp[1]);
+                dm = int.Parse(tmp[1]); //순서
                 tmp_pm.answer_num = int.Parse(tmp[2]);
-                an = int.Parse(tmp[2]);
+                an = int.Parse(tmp[2]); //대화갯수
                 tmp_pm.player_answer = 0; //일단 0
                 tmp_pm.dialog_subject = text_state;
-
-                //Debug.Log(tmp_pm.dialog_num + " " + tmp_pm.answer_num);
-
+                //tmp_pm.message = tmp[3]; //메시지
+                
                 pm_list.Add(tmp_pm);
             }
+            //실제 선택지
             else if (tmp[0] != "<ANSWER>")
             {
                 //리스트에 해당 텍스트 추가

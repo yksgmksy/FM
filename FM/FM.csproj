@@ -223,9 +223,12 @@
     <Compile Include="Assets\Script\House\House_InOut_Collider.cs" />
     <Compile Include="Assets\Script\House\House_Trigger_System.cs" />
     <Compile Include="Assets\Script\House\House_trigger.cs" />
+    <Compile Include="Assets\Script\House\Ladder.cs" />
     <Compile Include="Assets\Script\House\Platform.cs" />
     <Compile Include="Assets\Script\House\Switch.cs" />
     <Compile Include="Assets\Script\House\Teleport.cs" />
+    <Compile Include="Assets\Script\NPC\Jjindda.cs" />
+    <Compile Include="Assets\Script\NPC\LittleGirl.cs" />
     <Compile Include="Assets\Script\NPC\NPC_Manager.cs" />
     <Compile Include="Assets\Script\NPC\NPC_Talk.cs" />
     <Compile Include="Assets\Script\NPC\NPC_ThrowObject.cs" />
@@ -233,6 +236,7 @@
     <Compile Include="Assets\Script\PlayerMove.cs" />
     <Compile Include="Assets\Script\StaticGlobal.cs" />
     <Compile Include="Assets\Script\Sun_Moon_Move.cs" />
+    <Compile Include="Assets\Script\Test.cs" />
     <Compile Include="Assets\Script\Throwing.cs" />
     <Compile Include="Assets\Script\TimeColor.cs" />
     <Compile Include="Assets\Script\TimeColor_MeshRender.cs" />
@@ -243,6 +247,8 @@
     <Compile Include="Assets\Script\UI\UI_ItemProtocol.cs" />
     <Compile Include="Assets\Script\UI\UI_OnOffButton.cs" />
     <Compile Include="Assets\Script\UI\UI_Text_Show.cs" />
+    <Compile Include="Assets\Script\ladderAnimation.cs" />
+    <Compile Include="Assets\Script\ladderup_rootmotion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\2D Sky FREE\Demo\Scripts\Note.txt" />
@@ -284,7 +290,11 @@
     <None Include="Assets\PixelPerfectCamera\background_art_license.txt" />
     <None Include="Assets\RainMaker\Prefab\RainShader.shader" />
     <None Include="Assets\RainMaker\Readme.txt" />
-    <None Include="Assets\Resources\choice_dialog.txt" />
+    <None Include="Assets\Resources\choice_jjindda.txt" />
+    <None Include="Assets\Resources\choice_jjindda_door.txt" />
+    <None Include="Assets\Resources\choice_littlegirl.txt" />
+    <None Include="Assets\Resources\jjindda.txt" />
+    <None Include="Assets\Resources\jjindda_door.txt" />
     <None Include="Assets\Resources\little_girl.txt" />
     <None Include="Assets\Resources\white.txt" />
     <None Include="Assets\Shaders\2DBlend.shader" />

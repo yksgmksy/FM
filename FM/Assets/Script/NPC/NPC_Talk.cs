@@ -48,7 +48,7 @@ public class NPC_Talk : NPC_Manager {
         npc_Text.text = string.Empty;
 
 
-        Parse(data_name, nomean_dialog, main_dialog, quest_dialog , send_list);
+        Parse(data_name, nomean_dialog, main_dialog, quest_dialog , send_list, data_name); //name은 텍스트 파일 이름과 같다
         nomean_dialog.max_dialog_count = nomean_dialog.npc_dialog.Count-1;
         main_dialog.max_dialog_count = main_dialog.npc_dialog.Count - 1;
         quest_dialog.max_dialog_count = quest_dialog.npc_dialog.Count - 1;
@@ -90,16 +90,29 @@ public class NPC_Talk : NPC_Manager {
     void feedback_to_player(playermessage pm)
     {
         playerMessage = pm;
-       
+        
+        if (playerMessage.message == "NOKE")
+        {
+            switch (playerMessage.player_answer)
+            {
+                case 0:
+                    Debug.Log("문을염");
+                    gameObject.GetComponent<House_trigger>().isRock = false;
+                    break;
+                case 1:
+                    Debug.Log("아무일도 일어나지 않았다");
+                    break;
+            }
+        }
+
+        //대답이 없다면?
         if (playerMessage.answer_num != 0)
         {
             StopCoroutine("TalkEnd");
-
             init_and_next_Dialog(true);
-
             dialogTarget.SendMessage("Can_Move", SendMessageOptions.DontRequireReceiver);
-            
         }
+        
         //Debug.Log(pm.player_answer);
     }
 
@@ -124,14 +137,12 @@ public class NPC_Talk : NPC_Manager {
                 {
                     dialogTarget.SendMessage("Answer_Question", send_list[main_dialog.max_dialog_count + number_of_dialog_quest+1], SendMessageOptions.RequireReceiver);
                 }
-                Debug.Log("종료1");
                 yield break; //코루틴 종료
             }
 
 
             if (Input.GetKey(KeyCode.R))
             {
-                Debug.Log("종료");
                 //대화 스킵입니다
                 if (state_of_dialog == (int)StaticGlobal.Dialog.NO_MEAN) npc_Text.text = nomean_dialog.npc_dialog[number_of_dialog_nomean];
                 else if (state_of_dialog == (int)StaticGlobal.Dialog.MAIN) npc_Text.text = main_dialog.npc_dialog[number_of_dialog_main];
@@ -151,7 +162,7 @@ public class NPC_Talk : NPC_Manager {
                 }
                 else if (state_of_dialog == (int)StaticGlobal.Dialog.QUEST)
                 {
-                    dialogTarget.SendMessage("Answer_Question", send_list[main_dialog.max_dialog_count + number_of_dialog_quest +1], SendMessageOptions.RequireReceiver);
+                    dialogTarget.SendMessage("Answer_Question", send_list[main_dialog.max_dialog_count + number_of_dialog_quest + 1], SendMessageOptions.RequireReceiver);
                 }
                 yield break; //코루틴 종료
             }
@@ -192,38 +203,61 @@ public class NPC_Talk : NPC_Manager {
     void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player")) //플레이어만 상호작용
-            if (Input.GetKeyDown(KeyCode.E) && myDialogBox.enabled == false) //E버튼
+        {
+            if (gameObject.layer == LayerMask.NameToLayer("NPC"))
             {
-                //좌우반전
-                if (collision.gameObject.transform.position.x < gameObject.transform.position.x)
+                if (Input.GetKeyDown(KeyCode.E) && myDialogBox.enabled == false) //E버튼
                 {
-                    npcSprite.flipX = true;
+                    //좌우반전
+                    if (collision.gameObject.transform.position.x < gameObject.transform.position.x)
+                    {
+                        npcSprite.flipX = true;
+                    }
+                    else
+                        npcSprite.flipX = false;
+
+                    dialogTarget = collision.gameObject;
+                    if (!subtitleMode)
+                        myDialogBox.enabled = true;//말풍선 띄우기
+
+                    //캐릭터 움직이기
+                    Vector2 tmp = new Vector2();
+                    SpriteRenderer csr = dialogTarget.GetComponent<SpriteRenderer>();
+                    if (dialogTarget.transform.position.x < gameObject.transform.position.x)
+                    {
+                        tmp = new Vector2(-1, 1);
+                        if (csr.flipX == true) csr.flipX = false;
+                    }
+                    else
+                    {
+                        tmp = new Vector2(1, 1);
+                        if (csr.flipX == false) csr.flipX = true;
+                    }
+
+                    dialogTarget.SendMessage("Cannot_Move", tmp, SendMessageOptions.DontRequireReceiver);
+                    dialogTarget.GetComponent<Animator>().SetBool("isWalk", false);
+
+                    StartCoroutine("TalkStart");       //코루틴 시작
                 }
-                else
-                    npcSprite.flipX = false;
-
-                dialogTarget = collision.gameObject;
-                if(!subtitleMode)
-                    myDialogBox.enabled = true;//말풍선 띄우기
-
-                //캐릭터 움직이기
-                Vector2 tmp = new Vector2();
-                SpriteRenderer csr = dialogTarget.GetComponent<SpriteRenderer>();
-                if (dialogTarget.transform.position.x < gameObject.transform.position.x)
-                {
-                    tmp = new Vector2(-1, 1);
-                    if (csr.flipX == true) csr.flipX = false;
-                }
-                else
-                {
-                    tmp = new Vector2(1, 1);
-                    if (csr.flipX == false) csr.flipX = true;
-                }
-
-                dialogTarget.SendMessage("Cannot_Move", tmp, SendMessageOptions.DontRequireReceiver);
-                dialogTarget.GetComponent<Animator>().SetBool("isWalk", false);
-
-                StartCoroutine("TalkStart");       //코루틴 시작
             }
+            //문과같은 오브젝트라면
+            else if (gameObject.layer == LayerMask.NameToLayer("NotNPC"))
+            {
+                if(gameObject.GetComponent<House_trigger>().isRock == true)
+                if (Input.GetKeyDown(KeyCode.E) && myDialogBox.enabled == false)
+                {
+                    subtitle.SetActive(true);
+                    subtitle_texts[0].text = "현관문";
+                    if (!subtitleMode)
+                        myDialogBox.enabled = true;//말풍선 띄우기
+                    Vector2 tmp = new Vector2(0, 0);
+                    dialogTarget = collision.gameObject;
+                    dialogTarget.SendMessage("Cannot_Move", tmp, SendMessageOptions.DontRequireReceiver);
+                    dialogTarget.GetComponent<Animator>().SetBool("isWalk", false);
+
+                    StartCoroutine("TalkStart");       //코루틴 시작
+                }
+            }
+        }
     }
 }

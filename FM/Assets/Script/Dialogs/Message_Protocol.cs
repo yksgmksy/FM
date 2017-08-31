@@ -10,7 +10,9 @@ namespace MessageProtocol
         public int answer_num; //몇개의 대답이 있는가?
         public int dialog_subject; //대화의 주제는 무엇인가?
         public int dialog_num; //몇번째 대화인가?
-        public GameObject sendObject; //주체
+        public string sendName; //보낸이름
+        public string message;
+        public GameObject sendObject; //보낸이름
     }
 
     public struct playermessage
@@ -19,5 +21,6 @@ namespace MessageProtocol
         public int dialog_subject; //대화의 주제는 무엇인가?
         public int dialog_num; //몇번째 대화
         public int player_answer; //플레이어가 몇번째 대답을 햇냐
+        public string message; //메세지..
     }
 }

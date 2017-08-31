@@ -6,11 +6,13 @@ public class Platform : MonoBehaviour {
 
     BoxCollider2D col;
     Animator ani;
-
+    float startTime;//colcheck지연
     void Start () {
         col = gameObject.GetComponent<BoxCollider2D>();	
         ani = GameObject.FindWithTag("Player").GetComponent<Animator>();
-	}
+        startTime = Time.time;
+
+    }
 
     private void Update()
     {
@@ -36,7 +38,7 @@ public class Platform : MonoBehaviour {
                 col.isTrigger = false;
                 ani.SetBool("isJump", false);
                 ani.SetBool("isJumpDown", false);
-
+                startTime = Time.time;
             }
         }
     }
@@ -44,12 +46,14 @@ public class Platform : MonoBehaviour {
     //
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (ani.GetBool("isStay"))
-            return;
-        if (!ani.GetBool("isJumpDown"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            Debug.Log("이런도중에바껴버렷");
-            col.isTrigger = true;
+            if (Time.time > startTime + 0.07f)
+                if (ani.GetBool("isJumpDown"))
+                {
+                    col.isTrigger = true;
+                    startTime = Time.time;
+                }
         }
     }
     //빠져나가야 트리거로바뀜

@@ -22,7 +22,9 @@ public class StaticGlobal : MonoBehaviour {
     }
     public enum NPC_ID
     {
-        little_girl = 0
+        little_girl = 0,
+        jjindda,
+        jjindda_door
     }
 
     public const int NPC_LITTLE_GIRL = 1;
@@ -45,6 +47,13 @@ public class StaticGlobal : MonoBehaviour {
     public static int money;
     public static int stage_progress;
 
+    private void Awake()
+    {
+        Debug.Log(gameTime.Hour);
+        Debug.Log(money);
+        Debug.Log(stage_progress);
+        Debug.Log(Intimacy);
+    }
     private void Start()
     {
         startTime = Time.time;

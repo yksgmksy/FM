@@ -77,7 +77,7 @@ public class NPC_Manager : MonoBehaviour {
 
     //반드시 UTF-8인가 인코딩으로 저장해야합니다 (파일을요)
     protected void Parse(string TextName , no_mean_dialogs dialogBuf_no_mean, 
-        main_dialogs dialogBuf_main , quest_dialogs dialogBuf_quest , List<sendmessage> sm_list)
+        main_dialogs dialogBuf_main , quest_dialogs dialogBuf_quest , List<sendmessage> sm_list , string name)
     {
         TextAsset ta = Resources.Load(TextName) as TextAsset;
         StringReader sr = new StringReader(ta.text);
@@ -118,9 +118,12 @@ public class NPC_Manager : MonoBehaviour {
             {
                 tmp_sm.answer_num = int.Parse(tmp[1]);
                 tmp_sm.dialog_num = int.Parse(tmp[2]);
+                tmp_sm.message = tmp[3];
                 tmp_sm.dialog_subject = text_state;
                 tmp_sm.isAnswer = false;
                 tmp_sm.sendObject = this.gameObject;
+                tmp_sm.sendName = name;
+                
                 sm_list.Add(tmp_sm);
                 source = sr.ReadLine();
             }
@@ -128,9 +131,11 @@ public class NPC_Manager : MonoBehaviour {
             {
                 tmp_sm.answer_num = int.Parse(tmp[1]);
                 tmp_sm.dialog_num = int.Parse(tmp[2]);
+                tmp_sm.message = tmp[3];
                 tmp_sm.dialog_subject = text_state;
                 tmp_sm.isAnswer = true;
                 tmp_sm.sendObject = this.gameObject;
+                tmp_sm.sendName = name;
                 sm_list.Add(tmp_sm);
                 source = sr.ReadLine();
             }

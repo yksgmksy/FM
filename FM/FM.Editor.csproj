@@ -267,7 +267,11 @@
     <None Include="Assets\PixelPerfectCamera\background_art_license.txt" />
     <None Include="Assets\RainMaker\Prefab\RainShader.shader" />
     <None Include="Assets\RainMaker\Readme.txt" />
-    <None Include="Assets\Resources\choice_dialog.txt" />
+    <None Include="Assets\Resources\choice_jjindda.txt" />
+    <None Include="Assets\Resources\choice_jjindda_door.txt" />
+    <None Include="Assets\Resources\choice_littlegirl.txt" />
+    <None Include="Assets\Resources\jjindda.txt" />
+    <None Include="Assets\Resources\jjindda_door.txt" />
     <None Include="Assets\Resources\little_girl.txt" />
     <None Include="Assets\Resources\white.txt" />
     <None Include="Assets\Shaders\2DBlend.shader" />

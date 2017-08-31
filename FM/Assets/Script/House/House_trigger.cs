@@ -6,6 +6,7 @@ using UnityEngine;
 public class House_trigger : MonoBehaviour {
 
     public Transform movePosition;
+    public bool isRock; //문이닫혀있음
     bool isInside = true;
     int nowfloor = 0;
 
@@ -74,7 +75,7 @@ public class House_trigger : MonoBehaviour {
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player")) //플레이어만 상호작용
         {
-            if (Input.GetKeyDown(KeyCode.E) )//&& !isInside) //E버튼
+            if (!isRock && Input.GetKeyDown(KeyCode.E))//&& !isInside) //E버튼
             {
                 collision.gameObject.GetComponentInChildren<Fade_In_Out>().SendMessage("GoFadeIn"); //이동시 페이드 인효과를줌
                 //transform.parent.GetComponent<SpriteRenderer>().sortingOrder = 0;
@@ -90,15 +91,21 @@ public class House_trigger : MonoBehaviour {
                 collision.gameObject.GetComponent<PlayerMove>().SetPastPosition(movePosition.position);
                 //findRendererComponent(isInside);
             }
-            /*else if (Input.GetKeyDown(KeyCode.E) && isInside) //E버튼
+            else if (isRock && Input.GetKeyDown(KeyCode.E))
             {
-                collision.gameObject.GetComponentInChildren<Fade_In_Out>().SendMessage("GoFadeIn"); 
-                //transform.parent.GetComponent<SpriteRenderer>().sortingOrder = 10;
-                isInside = false;
-                nowfloor = 0;
-                transform.parent.GetComponentInChildren<House_InOut_Collider>().SendMessage("Enable_Trigger");
-                //findRendererComponent(isInside);
-            }*/
-        }
+                //문을 두드리거나 초인종을 눌렀다는 말이 대화창으로 나옴
+                //선택지를 줌 누른다 / 안누른다
+                //누르면 찐따가 열어줌
+            }
+                /*else if (Input.GetKeyDown(KeyCode.E) && isInside) //E버튼
+                {
+                    collision.gameObject.GetComponentInChildren<Fade_In_Out>().SendMessage("GoFadeIn"); 
+                    //transform.parent.GetComponent<SpriteRenderer>().sortingOrder = 10;
+                    isInside = false;
+                    nowfloor = 0;
+                    transform.parent.GetComponentInChildren<House_InOut_Collider>().SendMessage("Enable_Trigger");
+                    //findRendererComponent(isInside);
+                }*/
+            }
     }
 }

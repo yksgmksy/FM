@@ -1,0 +1,5 @@
+﻿[jjindda_door]
+[MAIN]
+<ANSWER>/0/2
+노크를 한다.\
+다음에 다시 온다.\

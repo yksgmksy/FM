@@ -40,7 +40,15 @@ public class White : MonoBehaviour {
 
     public bool DisappearComplete()
     {
-        if (sr.color.a == 0) return true;
+        if (sr.color.a >= 0.0001f)
+        {
+            tmpColor = sr.color;
+            tmpColor.a = 0;
+            sr.color = tmpColor;
+            StopCoroutine("appear");
+            StopCoroutine("disappear");
+            return true;
+        }
         return false;
     }
     IEnumerator appear()
